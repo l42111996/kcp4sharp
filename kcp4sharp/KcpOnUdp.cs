@@ -144,7 +144,7 @@ namespace cocosocket4unity
         }
     }
     //update kcp status
-    int cur = (int)DateTime.Now.Ticks;
+    long cur = DateTime.Now.Ticks;
     if (this.needUpdate|| cur >= kcp.GetNextUpdate())
     {
       kcp.Update(cur);

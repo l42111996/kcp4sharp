@@ -79,11 +79,16 @@ public class Kcp
   private int logmask;
   private  Output output;
   private  Object user;
-  private int nextUpdate;//the next update time.
+  private long nextUpdate;//the next update time.
 
   private static int _ibound_(int lower, int middle, int upper)
   {
     return Math.Min(Math.Max(lower, middle), upper);
+  }
+
+  private static long _itimediff(long later, long earlier)
+  {
+    return later - earlier;
   }
 
   private static int _itimediff(int later, int earlier)
@@ -896,15 +901,15 @@ public class Kcp
    * @param current
    * @return
    */
-  public int Check(long current)
+  public long Check(long current)
   {
-    int cur = (int) current;
+    long cur = current;
     if (updated == 0)
     {
       return cur;
     }
-    int ts_flush_temp = this.ts_flush;
-    int tm_packet = 0x7fffffff;
+    long ts_flush_temp = this.ts_flush;
+    long tm_packet = 0x7fffffff;
     if (_itimediff(cur, ts_flush_temp) >= 10000 || _itimediff(cur, ts_flush_temp) < -10000)
     {
       ts_flush_temp = cur;
@@ -913,11 +918,11 @@ public class Kcp
     {
       return cur;
     }
-    int tm_flush = _itimediff(ts_flush_temp, cur);
+    long tm_flush = _itimediff(ts_flush_temp, cur);
     for (int i = 0; i < snd_buf.Count;i++ )
     {
         Segment seg = snd_buf[i];
-        int diff = _itimediff(seg.resendts, cur);
+        long diff = _itimediff(seg.resendts, cur);
         if (diff <= 0)
         {
             return cur;
@@ -927,7 +932,7 @@ public class Kcp
             tm_packet = diff;
         }
     }
-    int minimal = tm_packet < tm_flush ? tm_packet : tm_flush;
+    long minimal = tm_packet < tm_flush ? tm_packet : tm_flush;
     if (minimal >= interval)
     {
       minimal = interval;
@@ -1050,12 +1055,12 @@ public class Kcp
     return snd_buf.Count + snd_queue.Count;
   }
 
-  public void SetNextUpdate(int nextUpdate)
+  public void SetNextUpdate(long nextUpdate)
   {
     this.nextUpdate = nextUpdate;
   }
 
-  public int GetNextUpdate()
+  public long GetNextUpdate()
   {
     return nextUpdate;
   }

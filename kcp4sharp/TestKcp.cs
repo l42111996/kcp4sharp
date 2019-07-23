@@ -43,7 +43,7 @@ namespace cocosocket4unity
             client.SetMinRto(10);
             client.SetConv(121106);
             //client.Connect("119.29.153.92", 2222);
-            client.Connect("127.0.0.1", 2222);
+            client.Connect("127.0.0.1", 10009);
 			client.Start();
 			Thread.Sleep(2000);
 			String s = "hi,heoll world! 你好啊！！";
